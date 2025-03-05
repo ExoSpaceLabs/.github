@@ -1,6 +1,6 @@
 # ExoSpaceLabs
 
-![ExoSpaceLabs Logo](path/to/logo.png)
+![ExoSpaceLabs Logo](imgs/ExoSpaceLabs-Logo.png)
 
 **Expanding with Space**
 
