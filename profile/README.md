@@ -1,6 +1,6 @@
 # ExoSpaceLabs
 
-![ExoSpaceLabs Logo](imgs/ExoSpaceLabs-Logo.png)
+![ExoSpaceLabs Logo](../imgs/ExoSpaceLabs-Logo.png)
 
 **Expanding with Space**
 
