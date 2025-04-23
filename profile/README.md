@@ -14,7 +14,7 @@ ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge
 - **Space Data Processing** – Libraries and tools for handling space mission data efficiently.
 - **Exploration & Simulation** – Software for simulating space environments and mission scenarios.
 
-Projects Status -> [here](https://github.com/ExoSpaceLabs/.github/docs/PROJECTSTATUS.md)
+Projects Status -> [here](../docs/PROJECTSTATUS.md)
 
 ## Vision & Mission
 Our mission is to create robust and efficient software solutions that empower space agencies, researchers, and developers in the field of space technology. We believe in open collaboration and innovation to push the boundaries of exploration.
