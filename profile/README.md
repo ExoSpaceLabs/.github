@@ -12,10 +12,10 @@ ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge
 - **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** – A powerful C++ library for handling CCSDS packet-based communication.
 
 ### Future Projects May include ###
-- **Real-Time Operating Systems (RTOS)** – Future projects may include custom RTOS and space-grade software solutions.
+- **Real-Time Operating Systems (RTOS)** – custom RTOS and space-grade software solutions.
 - **Space Data Processing** – Libraries and tools for handling space mission data efficiently.
 - **Exploration & Simulation** – Software for simulating space environments and mission scenarios.
-- **Acceletation Designs** - VHDL / Verilog designs to accelerate space related processing.
+- **Acceletation Designs** – VHDL / Verilog designs to accelerate space related processing.
 
 Projects Status -> [here](../docs/PROJECTSTATUS.md)
 
