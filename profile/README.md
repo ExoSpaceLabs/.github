@@ -9,7 +9,7 @@
 ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge software for space exploration, research, and real-time systems. Our goal is to provide high-performance, reliable, and scalable solutions that drive innovation in the aerospace industry.
 
 ### What We Offer
-- **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** – A powerful C++ library for handling CCSDS packet-based communication.
+- **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** – A powerful C++ library for handling CCSDS packet-based communication (current release v1.0.0).
 
 ### Future Projects May include ###
 - **Real-Time Operating Systems (RTOS)** – custom RTOS and space-grade software solutions.
