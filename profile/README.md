@@ -13,7 +13,6 @@ ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge
 - **[HeaRtos](https://github.com/ExoSpaceLabs/heartos)** – HeaRTOS is a minimal Real Time Operating System designed to be the core of more complex systems WIP.
 
 ### Future Projects May include ###
-- **Real-Time Operating Systems (RTOS)** – custom RTOS and space-grade software solutions.
 - **Space Data Processing** – Libraries and tools for handling space mission data efficiently.
 - **Exploration & Simulation** – Software for simulating space environments and mission scenarios.
 - **Acceletation Designs** – VHDL / Verilog designs to accelerate space related processing.
