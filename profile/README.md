@@ -10,7 +10,7 @@ ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge
 
 ### What We Offer
 - **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** – A powerful C++ library for handling CCSDS packet-based communication (current release v1.0.0).
-- **[HeaRtos](https://github.com/ExoSpaceLabs/heartos)** – HeaRTOS is a minimal Real Time Operating System designed to be the core of more complex systems WIP.
+- **[HeaRTOS](https://github.com/ExoSpaceLabs/heartos)** – HeaRTOS is a minimal Real Time Operating System designed to be the core of more complex systems WIP.
 
 ### Future Projects May include ###
 - **Space Data Processing** – Libraries and tools for handling space mission data efficiently.
