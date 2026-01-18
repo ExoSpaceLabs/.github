@@ -12,6 +12,13 @@ ExoSpaceLabs is an open-source organization dedicated to developing cutting-edge
 - **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** – A powerful C++ library for handling CCSDS packet-based communication (current release v1.1.0).
 - **[HardRT](https://github.com/ExoSpaceLabs/hardrt)** – HardRT is a minimal Real Time Operating System designed to be the core of more complex systems (current release v0.3.1).
 
+### Projects
+- **[EXN](https://github.com/ExoSpaceLabs/exn)** – open-source demonstration payload that combines a Raspberry Pi, STM32 (RTOS), and FPGA into an integrated Earth Observation system.
+  - **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)** –  Linux GS system communicating with exn-mcu node. Providing TUI, daemon and HardRT simulation.
+  - **EXN-MCU-RTOS** - The MCU Control Node is the supervisory brain of EXN. It runs on an STM32 with HardRT (WIP).
+  - **EXN-Pi-Camera** - The Pi Camera Node is responsible fo Captures images, pre-packets or streams raw data (WIP).
+  - **EXN-FPGA-AI** - FPGA (Processing Node) performs preprocessing, AI inference, and postprocessing of image on Fabric (WIP).
+
 ### Future Projects May include ###
 - **Space Data Processing** – Libraries and tools for handling space mission data efficiently.
 - **Exploration & Simulation** – Software for simulating space environments and mission scenarios.
