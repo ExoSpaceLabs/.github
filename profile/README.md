@@ -39,7 +39,7 @@ We welcome contributors and collaborators who share our vision. If you're intere
 ## Contact & Community
 - **GitHub:** [ExoSpaceLabs](https://github.com/ExoSpaceLabs)
 - **Discussions:** [GitHub Discussions](https://github.com/orgs/ExoSpaceLabs/discussions)
-- **Email:** none@exospacelabs.org (placeholder)
+- **Email:** exospacelabs@gmail.com
 
 ---
 🚀 *Join us as we expand with space!*
