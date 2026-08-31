@@ -6,210 +6,220 @@
 
 This document records the current engineering lifecycle, release baseline, dependency relationships, and next milestone for the ExoSpaceLabs portfolio. Repository issue trackers and release pages remain authoritative for implementation details and release evidence.
 
-## Portfolio Critical Path
+## Portfolio Dependency Map
 
-The current integration dependency chain is:
+The current program branches from the CCSDSPack v2 release rather than forming one strict linear dependency chain:
 
-`CCSDSPack 2.0.0` → `SpWKit CCSDSPack 2.x integration` → `EXN / EXN-GS modernization`
+```text
+CCSDSPack 2.0.0
+├── SpWKit #90: optional installed-package CCSDS/PUS transport interoperability
+└── EXN / EXN-GS: migrate existing CCSDS/PUS consumers and interfaces to 2.x
+    └── SpaceWire/SpWKit adoption is separate EXN transport scope if selected
+```
 
-SpWKit **v0.5.0 publication recovery** can proceed in parallel with CCSDSPack 2.0.0 release closure because CCSDSPack support is optional in the current SpWKit baseline.
+SpWKit **v0.5.0 publication recovery** can proceed in parallel with CCSDSPack 2.0.0 release closure because CCSDSPack is not a runtime dependency of the SpWKit core.
 
 ## Status Summary
 
 | Project | State | Current public baseline | Next milestone |
 | --- | --- | --- | --- |
 | [CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack) | **Release candidate** | v1.2.0 | Close/waive remaining v2 gates and publish v2.0.0 |
-| [SpWKit](https://github.com/ExoSpaceLabs/spwkit) | **Publication recovery** | v0.4.0; v0.5.0 tag exists but publication is incomplete | Repair OCI release job and publish v0.5.0, then migrate optional CCSDSPack integration to 2.x |
-| [EXN](https://github.com/ExoSpaceLabs/exn) | **Modernization** | Architecture/integration repository; no coherent current release baseline | Re-establish a versioned dependency and integration baseline on CCSDSPack 2.x and current SpWKit |
-| [EXN-GS](https://github.com/ExoSpaceLabs/exn-gs) | **Modernization** | Source baseline 0.1.0 | Remove developer-local/unpinned dependencies and validate against released CCSDSPack 2.x + SpWKit |
+| [SpWKit](https://github.com/ExoSpaceLabs/spwkit) | **Publication recovery** | v0.4.0; v0.5.0 tag exists but publication is incomplete | Repair the failed release path and publish v0.5.0; then complete CCSDSPack 2.x interoperability in #90 |
+| [EXN](https://github.com/ExoSpaceLabs/exn) | **Modernization** | Architecture/interface repository; no coherent current system release | Migrate shared packet contracts/components to CCSDSPack 2.x and restore system integration evidence |
+| [EXN-GS](https://github.com/ExoSpaceLabs/exn-gs) | **Modernization** | Source baseline 0.1.0 | Remove developer-local CCSDSPack fallback and validate against released 2.x packages |
 | [HardRT](https://github.com/ExoSpaceLabs/hardrt) | **Active / stable** | v0.4.0 | Continue targeted RTOS/port validation and maintenance |
-| [WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor) | **Active / stable** | v1.0.0 | Continue post-1.0 feature and operational hardening |
+| [WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor) | **Active / stable** | v1.0.0 | Continue normal post-1.0 feature and operational hardening |
 
 ---
 
 ## CCSDSPack
 
-**Role:** C++17 CCSDS Space Packet and ECSS PUS packet library. This is the protocol dependency that downstream SpWKit integration and EXN modernization should consume as a released package contract.
+**Role:** C++17 library for CCSDS Space Packet PDUs and supported ECSS PUS-A/PUS-C secondary headers, with explicit packet policy, parsing/validation, CUC time support, packaging, and conformance evidence.
 
 ### Current state
 
-- Latest public release: **v1.2.0**.
-- `develop` declares **2.0.0** and contains the v2 standards/API refactor.
-- Release-preparation PR **#128** was merged on 2026-08-26 after the v2 release-validation matrix passed.
-- At this snapshot, `develop` is substantially ahead of `main`; v2 has not yet been promoted as the public release baseline.
-- There are no open pull requests blocking the cut.
-- The remaining uncertainty is concentrated in the release-gate checklist in issue **#87**, particularly items that require explicit completion, evidence, waiver, or deferral.
+- Latest public release: **v1.2.0**, published 2026-08-02.
+- `develop` declares **2.0.0** and contains the standards/API refactor.
+- Release-preparation PR **#128** was merged on 2026-08-26 after the v2 software release-validation matrix passed.
+- v2 is not yet the public `main`/release baseline.
+- There are no open pull requests currently blocking the cut.
+- Remaining release uncertainty is concentrated in release tracker **#87**, where unchecked items still need explicit completion, evidence, waiver, or deferral.
 
 ### Release position
 
-The software line is at **release closure**, not feature development. New non-critical API or protocol work should not be added to the v2.0.0 gate unless it addresses a demonstrated release defect.
+CCSDSPack is at **release closure**, not open-ended feature development. New non-critical API/protocol work should stay outside the v2.0.0 gate unless it resolves a demonstrated release defect.
 
 ### Required actions
 
-1. Audit every unchecked item in release tracker #87 and classify it as:
-   - required and still open for v2.0.0;
-   - already complete with evidence;
-   - explicitly deferred to a later release.
-2. Resolve hardware-validation requirements by executing them or documenting an explicit waiver/deferral. Ambiguous unchecked hardware gates should not remain after the release decision.
-3. Reconcile/promote the validated v2 line to the release branch according to the repository release process.
-4. Create and publish **v2.0.0** with release artifacts and package-consumer verification.
-5. Use the published 2.0.0 package/API contract as the downstream integration baseline.
+1. Audit every unchecked item in #87 and classify it as required, evidenced complete, or deferred.
+2. Execute hardware-validation gates that remain mandatory, or record an explicit waiver/deferral.
+3. Promote/reconcile the validated v2 line according to the release process.
+4. Create and publish **v2.0.0** with release artifacts and installed-package consumer verification.
+5. Treat the published 2.0.0 package/API contract as the downstream migration baseline.
 
 ### Downstream impact
 
 Publishing CCSDSPack 2.0.0 unblocks:
 
-- SpWKit issue #87 for optional CCSDSPack 2.x integration;
-- EXN modernization issue #2;
-- EXN-GS migration issue #2.
+- SpWKit issue **#90**, which proves CCSDSPack-produced PUS/CCSDS bytes survive SpWKit transport unchanged without making CCSDSPack a SpWKit runtime dependency;
+- EXN modernization issue **#2**;
+- EXN-GS migration issue **#2**.
 
 ---
 
 ## SpWKit
 
-**Role:** Cross-platform SpaceWire integration toolkit with C11/C++17 APIs, SpaceWire packet/time-code support, RMAP, simulated transports, and hardware-facing SPI/UART/FTDI/FPGA backends.
+**Role:** Portable C11 SpaceWire software API with an optional C++17 wrapper, deterministic local simulation, distributed VSPW-TP/UDP links, Linux virtual-device/service paths, hosted POSIX/Windows support, and embedded/no-heap integration contracts.
 
-### Current state
+### Current implemented scope
+
+Current repository evidence includes:
+
+- stable public C API with optional header-only C++ wrapper;
+- loopback and process-local simulator paths;
+- VSPW-TP/UDP distributed virtual SpaceWire transport;
+- Linux VSPD/`vspwd` service path and production CUSE `/dev/vspwX` presentation;
+- native Winsock VSPW-TP parity;
+- hosted package-consumer validation;
+- HardRT POSIX integration and Cortex-M7 compile/link/no-heap evidence.
+
+**RMAP is not currently implemented in this repository and should not be listed as a present SpWKit capability.** Physical SpaceWire interoperability also remains a separate hardware/HIL claim.
+
+### Current release state
 
 - Latest published GitHub release: **v0.4.0**.
-- Repository/package version: **0.5.0**.
-- Immutable **v0.5.0** tag already exists.
-- The v0.5.0 release audit validated the major package/consumer paths, including:
-  - install/package smoke tests;
-  - C-only consumer;
-  - shared-library consumer;
-  - Windows package and DLL consumers;
-  - macOS package consumer;
-  - DEB consumers for amd64, arm64, armhf, and i386;
-  - reproducible source archive.
-- The blocking release job is the **multi-architecture OCI image build**. Because it failed, release evidence generation, GitHub Release/GHCR publication, and post-publish verification were skipped.
-- `SPWKIT_ENABLE_CCSDSPACK` is optional and currently defaults to OFF, so recovery of v0.5.0 publication does not need to wait for CCSDSPack 2.0.0.
+- Repository version: **0.5.0**.
+- An immutable **v0.5.0** tag exists.
+- Release workflow run `32470238125` passed the major package and installed-consumer gates.
+- The **multi-architecture OCI image** job failed in that release attempt, so release evidence generation, GitHub Release/GHCR publication, and post-publish verification were skipped.
+
+Issue **#87** is the v0.5 umbrella and now contains the current publication-recovery evidence.
 
 ### Required actions
 
 #### A. Recover v0.5.0 publication
 
-1. Repair the multi-architecture OCI image build in the v0.5.0 release workflow.
+1. Diagnose and repair the failing OCI release path.
 2. Rerun the failed release jobs against the existing immutable v0.5.0 tag.
-3. Publish the GitHub Release and OCI artifacts.
-4. Complete post-publish verification.
+3. Publish GitHub Release/container artifacts.
+4. Complete post-publish verification and close the v0.5 release boundary.
 
-Track this work in the existing v0.5.0 release issue **#90**.
+#### B. Add CCSDSPack 2.x interoperability afterward
 
-#### B. Integrate CCSDSPack 2.x afterward
+Tracked in **#90**.
 
-1. Wait for the public CCSDSPack 2.0.0 release/package contract.
-2. Pin/support the released 2.x line rather than an unreleased development branch.
-3. Reconcile the exported CMake target and integration API.
-4. Enable CCSDSPack-backed SpWKit CI paths and package-consumer validation.
-5. Add packet/PUS integration regressions across the dependency boundary.
-6. Publish the compatibility change as a follow-up SpWKit release. Do **not** mutate the existing v0.5.0 tag.
-
-Track this work in issue **#87**.
+1. Wait for public CCSDSPack 2.0.0.
+2. Pin the validated released package contract, not moving `develop`.
+3. Build standalone producer/consumer applications against installed CCSDSPack and SpWKit packages.
+4. Generate representative PUS TC/TM bytes with CCSDSPack, transport through independent SpWKit peers, verify exact byte identity, and parse/validate on the receiver.
+5. Keep CCSDSPack completely outside the `libspwkit` runtime dependency graph.
+6. Publish the interoperability evidence in a follow-up release rather than changing the existing v0.5.0 tag.
 
 ---
 
 ## EXN
 
-**Role:** Modular satellite-avionics demonstration and integration platform connecting Raspberry Pi payload processing, STM32 control/flight software, FPGA acceleration, CCSDS/PUS interfaces, SpaceWire networking, and ground/HIL tooling.
+**Role:** Architecture/interface project for a modular satellite-avionics demonstrator spanning Raspberry Pi payload processing, STM32 control software, FPGA processing, shared CCSDS/PUS interfaces, and ground/HIL tooling.
 
 ### Current state
 
-The architectural direction remains useful, but the repository is **not currently a reliable integrated release baseline**. Documentation and component assumptions were created against older packet/dependency contracts and need to be reconciled with the current CCSDSPack and SpWKit lines.
+The architecture remains useful, but the current repository is **not a reliable integrated release baseline**. Its shared packet definitions and component assumptions predate the CCSDSPack v2 contract and need reconciliation.
 
-The EXN repository should therefore be treated as **under modernization**, not as a stable implementation release.
+The repository has therefore been marked **Modernization** and its README now explicitly distinguishes implemented interfaces from planned SpaceWire integration.
 
-### Modernization sequence
+### Required actions
 
-Tracked in issue **#2**.
+Tracked in **#2**.
 
 1. Publish CCSDSPack 2.0.0.
-2. Establish the supported SpWKit + CCSDSPack 2.x compatibility baseline.
-3. Document exact supported dependency versions and canonical CMake package targets.
-4. Migrate EXN-GS and the MCU/Pi/FPGA component interfaces to the refreshed contracts.
-5. Review the central ICD/interfaces against implemented component behavior.
-6. Restore clean-checkout CI and end-to-end integration/HIL regression coverage.
-7. Tag a coherent EXN baseline only after all components can be built and validated from documented released dependencies.
+2. Migrate shared EXN packet/interface definitions to the released 2.x contract.
+3. Migrate direct CCSDSPack consumers in component repositories.
+4. Restore clean-checkout CI and cross-component CCSDS/PUS regressions.
+5. Reconcile the central ICD/documentation with actual implemented behavior.
+6. Decide explicitly whether SpWKit becomes the EXN SpaceWire layer. If adopted, implement/test it as separate transport scope rather than describing it as an existing dependency.
+7. Cut a coherent EXN system baseline only after dependencies and integration evidence are versioned and reproducible.
 
-### Acceptance criteria for a new EXN baseline
+### Acceptance criteria
 
-- no developer-local absolute dependency paths;
-- versioned dependency compatibility matrix;
+- no developer-local dependency paths;
+- explicit CCSDSPack compatibility/version policy;
 - reproducible clean-clone builds;
-- CCSDS/PUS interoperability tests across component boundaries;
-- SpaceWire/RMAP integration tests against the supported SpWKit release;
-- representative end-to-end HIL/simulation regression coverage;
-- architecture and ICD documentation matching actual implementation contracts.
+- CCSDS/PUS interoperability tests across relevant component boundaries;
+- representative command, housekeeping, payload-data, and HIL/simulation scenarios;
+- architecture/ICD documentation matching implemented contracts;
+- no SpaceWire/SpWKit claim without corresponding implementation and validation.
 
 ---
 
 ## EXN-GS
 
-**Role:** C++17 EXN ground-control and HIL environment with daemon/TUI tooling, CCSDS/PUS command and telemetry handling, device simulation, and SpaceWire/RMAP integration.
+**Role:** C++17 EXN ground-control/HIL environment with daemon, FTXUI terminal interface, command-line client, Serial/TCP device links, CCSDS/PUS handling, and STM32-oriented simulation.
 
 ### Current state
 
-The current build dependency logic contains concrete portability debt:
+`cmake/deps.cmake` currently:
 
-- `cmake/deps.cmake` probes the developer-local path `/home/dev/Works/CCSDSPack`;
-- its fallback tracks CCSDSPack `main` instead of a versioned released compatibility baseline;
-- the expected CCSDSPack CMake target/API must be reconciled with the v2 exported package contract;
-- supported SpWKit compatibility is not expressed as a clear versioned contract.
+1. tries `find_package(CCSDSPack QUIET)`;
+2. if that fails, attempts to build CCSDSPack from the developer-specific absolute path `/home/dev/Works/CCSDSPack`;
+3. creates a local imported/alias target for that build.
 
-This makes EXN-GS the first practical downstream migration target once CCSDSPack 2.0.0 is public.
+This means a clean checkout is not reproducible on another machine unless a compatible CCSDSPack package is already installed. There is **no current SpWKit dependency in EXN-GS**, and the README has been updated to state that explicitly.
+
+The repository root also contains local/generated-looking `.idea` and `logs` directories; issue #2 now includes a hygiene review rather than silently treating those as deliberate product assets.
 
 ### Required actions
 
-Tracked in issue **#2**.
+Tracked in **#2**.
 
-1. Remove local absolute dependency paths.
-2. Require/fetch released and supported CCSDSPack 2.x and SpWKit versions.
-3. Adapt packet/PUS API usage to CCSDSPack 2.x.
-4. Reconcile SpaceWire/RMAP integration with the supported SpWKit API.
-5. Add clean-checkout package-consumer CI.
-6. Run packet encode/decode, transport, subsystem-simulation, and fault-injection regressions.
+1. Remove the developer-local absolute dependency fallback.
+2. Consume released CCSDSPack 2.x through its canonical CMake package target/version policy.
+3. Adapt packet/PUS construction, parsing, and error handling to the v2 API.
+4. Add clean-checkout installed-package CI.
+5. Re-run the existing Serial/TCP daemon/simulator regression paths.
+6. Only add SpWKit if EXN deliberately introduces a SpaceWire transport backend for EXN-GS.
 
 ---
 
 ## HardRT
 
-**Role:** Small portable RTOS written in C, with static allocation, configurable scheduling, synchronization primitives, message queues, POSIX/Cortex-M ports, and an optional C++17 wrapper.
+**Role:** Small portable RTOS written in C, with static allocation, configurable scheduling, semaphores, mutexes, message queues, POSIX/Cortex-M ports, and an optional C++17 wrapper.
 
 ### Current state
 
 - Current release: **v0.4.0**.
-- The project has a clear standalone scope and does not sit on the CCSDSPack → SpWKit → EXN release critical path.
-- It can continue independently while EXN decides how much of its MCU architecture should consume the current HardRT API.
+- The project has a clear standalone scope and is not blocked by the CCSDSPack/EXN release program.
+- SpWKit already uses HardRT as an external integration proof without making HardRT a SpWKit runtime dependency.
 
 ### Priority
 
-Maintain validation quality and keep EXN integration requirements separate from RTOS core scope unless they produce generally useful RTOS features.
+Maintain RTOS/port validation and avoid coupling generic HardRT core scope to EXN-specific requirements unless those requirements produce reusable RTOS functionality.
 
 ---
 
 ## WorldSat Monitor
 
-**Role:** Self-hosted satellite/constellation situational-awareness platform with public orbital-data ingestion, backend propagation, persistent object/group management, and an interactive 3D Earth interface.
+**Role:** Self-hosted satellite/constellation situational-awareness platform with public orbital-data ingestion, backend SGP4 propagation, persistent object/group management, and an interactive 3D Earth interface.
 
 ### Current state
 
 - Current release: **v1.0.0**.
-- The project has a clear user-facing scope, documented source/image deployment, backend propagation, and an established service-oriented stack.
-- It is independent of the CCSDSPack/SpWKit/EXN avionics dependency chain.
+- The project has a clear user-facing scope, documented source/image deployment, backend propagation, and service-oriented packaging.
+- It is independent of the avionics-library modernization program.
 
 ### Priority
 
-Treat the v1.0.0 line as the stable baseline and continue normal post-release hardening/features without coupling it to the avionics-library release program.
+Treat v1.0.0 as the stable baseline and continue normal post-release hardening/features independently.
 
 ---
 
 ## Recommended Execution Order
 
 1. **CCSDSPack:** close v2 release gates and publish 2.0.0.
-2. **SpWKit in parallel:** repair the v0.5.0 OCI release job and complete publication.
-3. **SpWKit after CCSDSPack 2.0.0:** integrate released CCSDSPack 2.x and publish a follow-up compatibility release.
-4. **EXN-GS:** migrate first as the concrete host-side consumer and restore clean package integration.
-5. **EXN component repos:** migrate MCU, Pi, and FPGA interfaces/dependencies to the selected compatibility baseline.
-6. **EXN:** validate end-to-end, reconcile ICD/documentation, and cut a coherent modernization baseline.
+2. **SpWKit in parallel:** repair the v0.5.0 release publication path and complete publication of the existing tag.
+3. **After CCSDSPack 2.0.0:** execute SpWKit #90 interoperability proof.
+4. **EXN-GS:** migrate the first concrete host-side CCSDSPack consumer and restore clean package integration.
+5. **EXN component repositories:** migrate remaining packet/interface consumers and reconcile the central ICD.
+6. **EXN transport decision:** adopt/test SpWKit only where the architecture actually needs SpaceWire.
+7. **EXN system baseline:** validate end-to-end and cut a coherent post-modernization release.
 
-This order keeps release engineering, dependency migration, and system integration as separate gates instead of attempting to modernize the entire stack in one unbounded branch.
+This order separates release engineering, packet-library migration, and transport integration into auditable gates instead of combining them into one unbounded modernization branch.
