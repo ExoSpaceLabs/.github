@@ -10,8 +10,8 @@ ExoSpaceLabs develops open-source engineering infrastructure for spacecraft comm
 
 | Project | Lifecycle | Description |
 | --- | --- | --- |
-| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** | **2.0 release candidate** | C++17 library for CCSDS Space Packets and ECSS PUS TM/TC. Provides packet construction, serialization, bounded parsing, validation, secondary-header profiles, CUC time support, package integration, and standards-oriented conformance evidence. Public stable baseline: **v1.2.0**. |
-| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)** | **0.5 publication recovery** | Portable C11 SpaceWire toolkit with an optional C++17 wrapper, deterministic loopback/process-local simulation, distributed VSPW-TP/UDP links, Linux VSPD/CUSE virtual-device paths, hosted POSIX/Windows support, and no-heap embedded/RTOS integration contracts. |
+| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** | **Stable / v2.0.0** | C++17 library for CCSDS Space Packets and ECSS PUS-A/PUS-C TM/TC. v2.0.0 is the current public baseline, with bounded parsing, structured validation, CUC time, installed-package support, hosted CI, native arm64 validation, and physical Cortex-M7 execution evidence. |
+| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)** | **Stable v0.5.0 / v0.6 development** | Portable C11 SpaceWire toolkit with an optional C++17 wrapper, deterministic local simulation, distributed VSPW-TP/UDP links, Linux VSPD/CUSE virtual-device paths, hosted POSIX/Windows support, and no-heap embedded/RTOS integration contracts. v0.6 adds a reusable hardware-driver/DMA boundary and CCSDSPack v2 interoperability evidence without claiming a physical SpaceWire implementation. |
 | **[EXN](https://github.com/ExoSpaceLabs/exn)** | **Modernization** | Modular satellite-avionics demonstration platform spanning Raspberry Pi payload processing, STM32 control software, FPGA acceleration, shared CCSDS/PUS interfaces, and ground/HIL tooling. The current integration baseline is being migrated to CCSDSPack 2.x; SpaceWire/SpWKit adoption is a separate planned integration decision. |
 | **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)** | **Modernization** | C++17 ground-control and HIL environment with daemon, FTXUI terminal interface, command-line control, Serial/TCP links, CCSDS/PUS handling, and an STM32-oriented simulator. Its dependency setup is being migrated to a reproducible CCSDSPack 2.x package contract. |
 | **[HardRT](https://github.com/ExoSpaceLabs/hardrt)** | **Active** | Small portable real-time operating system written in C, with static tasks, configurable scheduling, semaphores, mutexes, message queues, POSIX/Cortex-M ports, and an optional C++17 wrapper. Current release: **v0.4.0**. |
@@ -19,19 +19,20 @@ ExoSpaceLabs develops open-source engineering infrastructure for spacecraft comm
 
 ## Current Integration Priority
 
-The current portfolio program branches from the CCSDSPack 2.0 release:
+CCSDSPack **v2.0.0 is now the released packet-layer baseline** for downstream work:
 
 ```text
-CCSDSPack 2.0.0
-├── SpWKit: prove optional CCSDSPack 2.x packet transport interoperability
-└── EXN: migrate shared packet interfaces and consumers to CCSDSPack 2.x
-    └── evaluate/adopt SpWKit separately for SpaceWire transport where required
+CCSDSPack 2.0.0 [released]
+├── SpWKit v0.6: finalize immutable v2.0.0 interoperability evidence
+│   └── complete portable hardware-driver/DMA integration boundary
+└── EXN / EXN-GS: migrate CCSDS/PUS consumers to the released 2.x contract
+    └── evaluate/adopt SpWKit separately where SpaceWire transport is required
 ```
 
-SpWKit **v0.5.0 publication recovery** is independent of CCSDSPack 2.0 and can proceed in parallel.
+SpWKit **v0.5.0 is also released**. Development has moved to v0.6.0, where the portable driver backend, DMA/zero-copy ownership mapping, deterministic host reference driver, and deployment-shaped two-node CCSDS-over-UDP example are already implemented on `develop`.
 
-1. **CCSDSPack:** close or explicitly defer the remaining v2 release-gate items and publish the validated 2.0.0 line.
-2. **SpWKit:** recover publication of the already-created v0.5.0 tag. After CCSDSPack 2.0 is public, complete the separate installed-package interoperability work tracked for CCSDSPack 2.x.
+1. **CCSDSPack:** treat v2.0.0 as the stable integration contract; keep new protocol scope and future features outside the released v2 baseline unless handled through normal 2.x maintenance/versioning.
+2. **SpWKit:** repin the existing CCSDSPack interoperability fixture from its validated post-release snapshot to the immutable v2.0.0 tag and rerun the evidence; complete STM32H755 DMA/cache runtime validation, document the public proprietary-safe FPGA/driver boundary, then close the v0.6 release audit.
 3. **EXN:** migrate current CCSDS/PUS consumers and shared definitions to CCSDSPack 2.x, remove developer-local dependency assumptions, restore clean-checkout CI/HIL validation, and only claim SpaceWire/SpWKit integration once that transport is implemented and tested.
 
 Detailed lifecycle and release state is maintained in **[Project Status](../docs/PROJECTSTATUS.md)**.
