@@ -4,7 +4,7 @@
 
 **Expanding with Space**
 
-ExoSpaceLabs develops open-source engineering infrastructure for spacecraft communications, embedded avionics, real-time execution, simulation, and mission observability. The portfolio focuses on standards-based interfaces, practical hardware integration, reproducible builds, and software that can move from desktop simulation to representative embedded targets without changing its engineering contract every other Tuesday.
+ExoSpaceLabs develops open-source engineering infrastructure for spacecraft communications, embedded avionics, real-time execution, simulation, and mission observability. The portfolio focuses on standards-based interfaces, practical hardware integration, reproducible builds, and software that can move from desktop simulation to representative embedded targets through stable engineering contracts.
 
 ## Project Portfolio
 
@@ -39,7 +39,7 @@ Detailed lifecycle and release state is maintained in **[Project Status](../docs
 
 ## Engineering Principles
 
-Projects are expected to have a defined scope, documented public interfaces, automated validation, explicit compatibility/versioning, and a credible route to representative hardware or integration testing. Experimental work is welcome, but experimental state should be labeled as such rather than promoted through the ancient engineering ritual of hoping nobody notices.
+Projects are expected to have a defined scope, documented public interfaces, automated validation, explicit compatibility/versioning, and a credible route to representative hardware or integration testing. Experimental work should be clearly identified and separated from supported release baselines.
 
 ## Contributing
 
