@@ -10,30 +10,37 @@ ExoSpaceLabs develops open-source engineering infrastructure for spacecraft comm
 
 | Project | Lifecycle | Description |
 | --- | --- | --- |
-| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** | **2.0 release candidate** | C++17 library for CCSDS Space Packets and ECSS PUS TM/TC. Provides packet construction, serialization, bounded parsing, validation, mission profiles, package integration, and standards-oriented conformance evidence. Public stable baseline: **v1.2.0**. |
-| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)** | **0.5 publication recovery** | Cross-platform C11/C++17 toolkit for SpaceWire development and integration, including packet/time-code handling, RMAP, simulation transports, Linux `spidev`, FTDI/FPGA bridges, UART/SPI backends, and a C ABI. |
-| **[EXN](https://github.com/ExoSpaceLabs/exn)** | **Modernization** | Modular satellite-avionics demonstration platform spanning Raspberry Pi payload processing, STM32 flight/control software, FPGA acceleration, SpaceWire networking, CCSDS/PUS interfaces, and ground/HIL tooling. The integration baseline is being migrated to CCSDSPack 2.x and current SpWKit. |
-| **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)** | **Modernization** | C++17 ground-control and hardware-in-the-loop environment for EXN, with CCSDS/PUS command and telemetry handling, SpaceWire/RMAP integration, terminal tooling, subsystem simulation, and fault-injection workflows. |
+| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)** | **2.0 release candidate** | C++17 library for CCSDS Space Packets and ECSS PUS TM/TC. Provides packet construction, serialization, bounded parsing, validation, secondary-header profiles, CUC time support, package integration, and standards-oriented conformance evidence. Public stable baseline: **v1.2.0**. |
+| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)** | **0.5 publication recovery** | Portable C11 SpaceWire toolkit with an optional C++17 wrapper, deterministic loopback/process-local simulation, distributed VSPW-TP/UDP links, Linux VSPD/CUSE virtual-device paths, hosted POSIX/Windows support, and no-heap embedded/RTOS integration contracts. |
+| **[EXN](https://github.com/ExoSpaceLabs/exn)** | **Modernization** | Modular satellite-avionics demonstration platform spanning Raspberry Pi payload processing, STM32 control software, FPGA acceleration, shared CCSDS/PUS interfaces, and ground/HIL tooling. The current integration baseline is being migrated to CCSDSPack 2.x; SpaceWire/SpWKit adoption is a separate planned integration decision. |
+| **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)** | **Modernization** | C++17 ground-control and HIL environment with daemon, FTXUI terminal interface, command-line control, Serial/TCP links, CCSDS/PUS handling, and an STM32-oriented simulator. Its dependency setup is being migrated to a reproducible CCSDSPack 2.x package contract. |
 | **[HardRT](https://github.com/ExoSpaceLabs/hardrt)** | **Active** | Small portable real-time operating system written in C, with static tasks, configurable scheduling, semaphores, mutexes, message queues, POSIX/Cortex-M ports, and an optional C++17 wrapper. Current release: **v0.4.0**. |
 | **[WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor)** | **Active** | Self-hosted satellite and constellation situational-awareness platform with backend SGP4 propagation, persistent object/group management, public orbital-data ingestion, and an interactive 3D Earth interface. Current release: **v1.0.0**. |
 
 ## Current Integration Priority
 
-The main portfolio dependency chain is:
+The current portfolio program branches from the CCSDSPack 2.0 release:
 
-`CCSDSPack 2.0.0` → `SpWKit CCSDSPack 2.x integration` → `EXN / EXN-GS modernization`
+```text
+CCSDSPack 2.0.0
+├── SpWKit: prove optional CCSDSPack 2.x packet transport interoperability
+└── EXN: migrate shared packet interfaces and consumers to CCSDSPack 2.x
+    └── evaluate/adopt SpWKit separately for SpaceWire transport where required
+```
+
+SpWKit **v0.5.0 publication recovery** is independent of CCSDSPack 2.0 and can proceed in parallel.
 
 1. **CCSDSPack:** close or explicitly defer the remaining v2 release-gate items and publish the validated 2.0.0 line.
-2. **SpWKit:** recover publication of the already-created v0.5.0 tag, then migrate its optional CCSDSPack integration to the released 2.x contract in a follow-up release.
-3. **EXN:** remove stale and developer-local dependency assumptions, migrate all components to documented released package contracts, restore clean-checkout CI, and re-establish end-to-end HIL/integration regression coverage.
+2. **SpWKit:** recover publication of the already-created v0.5.0 tag. After CCSDSPack 2.0 is public, complete the separate installed-package interoperability work tracked for CCSDSPack 2.x.
+3. **EXN:** migrate current CCSDS/PUS consumers and shared definitions to CCSDSPack 2.x, remove developer-local dependency assumptions, restore clean-checkout CI/HIL validation, and only claim SpaceWire/SpWKit integration once that transport is implemented and tested.
 
 Detailed lifecycle and release state is maintained in **[Project Status](../docs/PROJECTSTATUS.md)**.
 
 ## Engineering Focus
 
-- **Space communications:** CCSDS Space Packets, ECSS PUS, SpaceWire, RMAP, command/telemetry transport, and protocol validation.
-- **Embedded and real-time systems:** STM32/Cortex-M software, FPGA-facing interfaces, portable RTOS primitives, deterministic execution, and hardware-oriented transport layers.
-- **Simulation and HIL:** host-side device simulation, fault injection, ground-segment tooling, and reproducible integration environments.
+- **Space communications:** CCSDS Space Packets, ECSS PUS, SpaceWire transport, command/telemetry handling, and protocol validation.
+- **Embedded and real-time systems:** STM32/Cortex-M software, FPGA-facing interfaces, portable RTOS primitives, deterministic execution, and hardware-oriented integration boundaries.
+- **Simulation and HIL:** host-side device simulation, fault injection, ground-segment tooling, distributed virtual links, and reproducible integration environments.
 - **Mission observability:** satellite tracking, orbital propagation, telemetry visualization, state persistence, and operational dashboards.
 - **Release engineering:** CMake packages, binary artifacts, multi-platform CI, external-consumer validation, documentation, and versioned compatibility contracts.
 
