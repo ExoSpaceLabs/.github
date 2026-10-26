@@ -2,146 +2,125 @@
 
 [Organization profile](../profile/README.md)
 
-**Snapshot:** 2026-10-23
+**Snapshot:** 2026-10-26
 
-This document records the current release baselines, development state, qualification evidence, dependency relationships, and immediate engineering priorities across the ExoSpaceLabs portfolio.
+This document records the current release baselines, active development lines, qualification state, dependency relationships, and immediate engineering priorities across the ExoSpaceLabs portfolio.
 
 ## Portfolio Status
 
-| Project | Public baseline | Current development state | Immediate next milestone |
+| Project | Public baseline | Active development state | Immediate next milestone |
 | --- | --- | --- | --- |
-| [CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack) | **v2.0.0** | v2.1 C11-core migration complete; Pi 5 and STM32H755 acceptance passed | Final release PR, promotion, tag and publication |
-| [SpWKit](https://github.com/ExoSpaceLabs/spwkit) | **v0.7.0** | Functional physical RAW-Ethernet HIL passes; performance qualification remains open | Diagnose ACK/retry anomalies, finish end-to-end transport campaign, then v0.8 readiness freeze |
-| [HardRT](https://github.com/ExoSpaceLabs/hardrt) | **v0.5.1** | v0.6 bounded synchronization/timing features implemented; full H755 campaign passed on qualified baseline | Complete release audit, qualification-equivalence controls and 0.6 release closure |
-| [EXN](https://github.com/ExoSpaceLabs/exn) | No system release | PUS-C inter-device architecture established; P0 OBC↔Pi path prioritized | Implement and validate real Ground↔Pi↔OBC loop |
-| [EXN-GS](https://github.com/ExoSpaceLabs/exn-gs) | No release yet | Ground/HIL migrated to central PUS-C profile | Continue central-ICD alignment and validate against real OBC/Pi path |
-| [WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor) | **v1.1.0** | Provider resilience/freshness/provenance released | Browser/WebGL E2E validation, then multi-provider expansion |
+| [CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack) | **v2.1.0** | v2.2 validation-ownership refactor active; develop is ahead of main | Complete C11-as-single-protocol-authority audit across C++ boundaries |
+| [HardRT](https://github.com/ExoSpaceLabs/hardrt) | **0.6.0** | Released and qualified; main and develop aligned | Begin 0.7 timing/interference qualification and analytical-bound work |
+| [SpWKit](https://github.com/ExoSpaceLabs/spwkit) | **v0.7.0** | End-to-end transport campaign active; develop substantially ahead of release main | Resolve ACK/retry/performance anomalies, finish qualification, then v0.8 readiness freeze |
+| [EXN](https://github.com/ExoSpaceLabs/exn) | No system release | Central PUS-C architecture and complete component-to-component ICD authority defined | Implement and validate P0 Ground ↔ Pi communications ↔ STM32 OBC path |
+| [EXN-GS](https://github.com/ExoSpaceLabs/exn-gs) | No release yet | PUS-C Ground/HIL baseline implemented | Validate against real Pi/OBC path and keep mission semantics synchronized with EXN |
+| [WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor) | **v1.1.0** | Post-v1.1 UI resilience/mobile work on develop; Sites deployment PR active | Browser/WebGL E2E qualification and release-grade visual validation |
 
 ## Executive Position
 
-The reusable software foundations are no longer the primary portfolio blocker.
+The portfolio has moved materially since the previous snapshot:
 
-- **CCSDSPack v2.1** is essentially release-complete from an implementation and physical-acceptance standpoint.
-- **HardRT v0.6** has the intended bounded synchronization/timing features implemented and a full physical H755 qualification run on the accepted baseline; remaining work is primarily release control and the distinction between measured evidence and later 1.0 analytical guarantees.
-- **SpWKit v0.7** has a mature software-visible contract and physical functional evidence, but its end-to-end transport performance still requires root-cause work before the next contract/readiness freeze.
-- **EXN** has moved from architecture churn into implementation. P0 is deliberately the OBC + Pi Antenna path; FPGA support remains modular.
-- **WorldSat Monitor v1.1.0** is released and has moved into browser-level validation and future provider expansion.
-
-The important distinction is now **software feature completeness vs qualification/release completeness**. Treating every open umbrella issue as an unfinished implementation would badly misrepresent the state of the projects.
+- **CCSDSPack v2.1.0 is now published**, not a release candidate. The C11 core is the released architecture; v2.2 is tightening the remaining C++/C protocol-validation boundary.
+- **HardRT 0.6.0 is now published**, with the full STM32H755 qualification already completed. The project has moved past 0.6 release closure into the 0.7 hard-real-time timing/interference phase.
+- **SpWKit v0.7.0 remains the stable release**, but active development is now centered on end-to-end transport diagnostics and performance qualification rather than basic functionality.
+- **EXN has clarified interface ownership**: EXN owns every mission-visible component-to-component contract, including interfaces between co-located Pi services. Only true implementation-internal contracts remain in component repositories.
+- **WorldSat Monitor v1.1.0 remains the stable application baseline**, while develop has accumulated post-release UI/mobile/recovery validation and the serverless Sites path remains an active PR.
+- **SpWKit FPGA has advanced from repository/setup planning into real KV260 bring-up**, with a standard-VHDL blink path and safer JTAG probing now present, while visible/measurable GPIO validation and the actual SpaceWire controller/RTL remain open.
 
 ---
 
 ## CCSDSPack
 
-**Current public release:** **v2.0.0**, published 2026-08-31.
+**Current public release:** **v2.1.0**, published 2026-10-25.
 
-**Current development milestone:** **v2.1.0 release candidate**.
+### Released v2.1 baseline
 
-### v2.1 implementation state
+v2.1 establishes:
 
-The v2.1 line introduces an authoritative C11 protocol core while retaining the existing C++17 ownership/convenience API.
+- authoritative C11 protocol core;
+- compatible C++17 ownership/convenience layer;
+- Space Packet header/wire primitives;
+- CRC16 and endian helpers;
+- PUS-A/PUS-C TC/TM codecs;
+- numeric CUC time;
+- allocation-free packet views;
+- structured validation;
+- segmentation/reassembly;
+- stream walking;
+- pointer-native parsing;
+- caller-buffer packet finalization/encoding;
+- C-only and C++ installed-package consumers.
 
-Completed implementation includes:
+Release qualification included native Raspberry Pi 5/arm64 acceptance and NUCLEO-H755ZI-Q/Cortex-M7 acceptance.
 
-- C11 result/status and raw-buffer primitives;
-- primary Space Packet header encode/decode and bounded packet inspection;
-- CRC16 and byte-order primitives;
-- numeric CUC support;
-- zero-copy/non-owning packet views;
-- PUS-A/PUS-C TC and TM codecs;
-- allocation-free structured validation primitives;
-- segmentation planning;
-- receive-side reassembly;
-- bounded packet-stream cursor;
-- pointer-native packet parsing;
-- generic and PUS-specific validator delegation;
-- allocation-free packet finalization/caller-buffer encoding;
-- installed C API and C-only consumer/package support;
-- retained C++17 source compatibility for the v2 API surface.
+### v2.2 active work
 
-### Qualification state
+The development branch is now focused on a stricter architectural rule:
 
-The qualified v2.1 candidate has passed:
+> every protocol/wire rule has one authority: the C11 core.
 
-- hosted Linux/Windows regression and package gates;
-- C-only build/consumer validation;
-- sanitizer/fuzz coverage;
-- native Raspberry Pi 5 / arm64 acceptance;
-- NUCLEO-H755ZI-Q / Cortex-M7 physical acceptance using the DAS/OpenOCD harness.
+Current work includes:
 
-This means v2.1 is **not waiting on missing protocol implementation or missing hardware execution**.
+- removing duplicated C++ prevalidation before C codecs;
+- routing primary-header numeric/range validation through C11;
+- auditing PUS setters and TM decode boundaries;
+- preserving C++ object-state/ownership invariants without duplicating protocol constants;
+- adding C-only/C++ parity and negative/error-vector tests;
+- retaining performance evidence where validation-path changes affect cost.
 
-### Remaining release work
+Open v2.2 PRs currently include the primary-header validation refactor and PUS TM validation-boundary cleanup.
 
-- final review of the qualified release candidate;
-- verify release-governance checks and build-input qualification equivalence;
-- promote the accepted candidate to the release branch/main according to the approved workflow;
-- tag and publish v2.1.0;
-- retain exact qualification/package/hardware evidence.
-
-Open CFDP/Python/sync-pattern work is future scope and does not redefine v2.1 completion.
+The released v2.1.0 behavior is not being rewritten by this work.
 
 ---
 
 ## HardRT
 
-**Current public release:** **0.5.1**, published 2026-09-08.
+**Current public release:** **0.6.0**, published 2026-10-25.
 
-**Current development milestone:** **0.6.0**.
+### 0.6 released capability
 
-### v0.6 implementation state
+0.6 adds the synchronization/timing semantics that were previously under qualification:
 
-The 0.6 release theme is bounded synchronization and timing semantics.
-
-Implemented on the development line:
-
-- common wrap-safe timeout/deadline engine;
-- semaphore and queue timeout variants;
-- timed mutex locking;
-- deterministic wake-vs-timeout semantics;
-- bounded waiter unlink/expiry behavior;
-- bounded/transitive mutex priority inheritance;
-- explicit base/effective priority handling;
-- stable-phase periodic timing through `hrt_delay_until()`;
-- absolute-release semantics that do not accumulate execution/preemption drift;
-- observable deterministic deadline-miss behavior;
-- integration of the new timing/synchronization semantics with the existing bounded sleeper/deadline structures.
+- common absolute-tick timeout/deadline engine;
+- timed semaphore, queue, mutex, event and notification operations;
+- bounded waiter timeout/expiry handling;
+- statically bounded transitive priority inheritance under fixed-priority policies;
+- stable-phase periodic release via hrt_delay_until();
+- explicit deadline-miss semantics that preserve nominal phase;
+- documented distinction between structural bounds, measured timing evidence and universal WCET claims.
 
 ### Qualification state
 
-A complete NUCLEO-H755ZI-Q campaign has already passed on the accepted 0.6 development baseline:
+The qualified NUCLEO-H755ZI-Q campaign passed:
 
-- **16/16 functional contracts passed**;
-- **52/52 benchmark metrics passed**;
-- **39 firmware/build images** exercised;
-- no failures/skips recorded in the full unfiltered run.
+- **16/16 functional contracts**;
+- **52/52 benchmark metrics**;
+- **39 build/flash images**;
+- no failed/skipped release-gate cases.
 
-The key remaining release concern is that later version/release-workflow changes must not silently invalidate the qualified build-input boundary.
+The release is now published and main / develop are aligned.
 
-### Remaining 0.6 work
+### Qualification evidence policy
 
-- authoritative root `VERSION` and consistent generated/package versioning;
-- 0.6 release notes and documentation reconciliation;
-- qualification-aware automatic tagging/release staging;
-- build-input equivalence checks between physically qualified candidate and promoted release SHA;
-- retain explicit evidence linking source, dependencies, build inputs and physical qualification;
-- close any remaining 0.6 characterization/documentation items without overstating observed timing maxima as universal WCET.
+The repository now keeps concise qualification summaries as the durable release record rather than storing complete raw logs from every deterministic run. Detailed diagnostics are regenerated on demand from the canonical qualification scripts when required.
 
-### Beyond 0.6
+### Next phase: 0.7
 
-HardRT is **not 1.0-complete**. Later milestones intentionally retain work such as:
+The next substantive engineering work is deeper hard-real-time qualification:
 
-- deeper critical-section/interference analysis and configuration-specific analytical bounds;
-- scheduler/ISR/task timing decomposition;
+- critical-section and bounded-operation characterization;
+- scheduler/context-switch decomposition;
+- ISR-to-task timing decomposition;
+- IPC handoff/copy-cost analysis;
+- periodic release jitter and interference characterization;
 - machine-readable timing evidence;
-- architecture-neutral task stack API;
-- public diagnostic namespace cleanup;
-- further static-analysis/API hardening;
-- final 1.0 configuration/API freeze and qualification contract.
+- conversion of measured behavior into configuration-specific analytical bounds where justified.
 
-So the correct status is:
+Pre-1 API hardening, architecture-neutral stack storage, diagnostic namespacing and final configuration/API freeze remain later roadmap work.
 
-> **0.6 feature implementation: essentially complete. 0.6 release closure: pending. 1.0 hard-real-time qualification/hardening: still active future work.**
+Open 0.6 tracker issues may remain as historical/cleanup trackers; they no longer mean the 0.6 release is unpublished.
 
 ---
 
@@ -151,142 +130,144 @@ So the correct status is:
 
 ### Stable software contract
 
-v0.7 establishes:
+The release provides:
 
-- authoritative C11 runtime with optional C++17 wrapper;
-- process-local simulator;
+- C11 runtime plus optional C++17 wrapper;
+- deterministic simulator;
 - VSPW transport semantics;
-- UDP and RAW-Ethernet-capable transport-provider architecture;
-- Linux DEVICE/VSPD integration;
+- UDP and RAW-Ethernet-capable provider architecture;
+- Linux DEVICE/VSPD support;
 - public DRIVER backend contract;
-- lifecycle, timeout, error and resource semantics;
-- zero-copy ownership epochs and DMA/cache integration rules;
-- backend behavioral-equivalence tests;
+- lifecycle, timeout, error, resource and zero-copy ownership semantics;
+- reusable backend-contract/equivalence validation;
 - scoped ECSS-E-ST-50-12C software traceability;
-- installed package/container evidence across supported hosted targets;
-- physical STM32H755 DMA/cache/driver-boundary validation.
-
-A specific FPGA/HDL implementation is **not** a dependency of the generic SpWKit 1.0 software contract.
+- STM32H755 DMA/cache/provider-boundary evidence.
 
 ### Physical functional status
 
-Current hardware campaign evidence shows functional PASS across:
+Functional hardware testing passes across:
 
-- PC ↔ Raspberry Pi 5 RAW Ethernet;
-- PC ↔ STM32H755 RAW Ethernet;
-- Raspberry Pi 5 ↔ STM32H755 RAW Ethernet.
+- PC ↔ Raspberry Pi 5;
+- PC ↔ STM32H755;
+- Raspberry Pi 5 ↔ STM32H755.
 
-The campaign observed no final payload mismatch or unrecovered functional failure in the qualified runs.
+The tested STM32 runs verified payload integrity without final application mismatch, MCU fault or unrecovered link failure.
 
-### Performance status
+### Active performance investigation
 
-Performance is **not yet qualified**.
+Performance interpretation is still not qualified.
 
-The current investigation tracks large throughput/latency variation across host and STM32 clock combinations. The leading but unproven hypothesis involves VSPW ACK/retry timing and whole-message retransmission behavior.
+Current development includes:
 
-Required work includes:
+- in-memory CPU profiling;
+- TX-slot diagnostics;
+- transport/carrier accounting;
+- ACK/retry observability;
+- comparison of PC/Pi host behavior against STM32 clock profiles;
+- repeatable benchmark orchestration.
 
-- low-overhead counters for original TX, retransmissions, DATA/ACK/control frames, timeouts and retry exhaustion;
-- matched/unmatched/late ACK accounting;
-- duplicate/reassembly statistics;
-- bounded ACK-age/turnaround histograms;
-- controlled repeated PC/Pi/STM32 tests;
-- clear separation between intrinsic sequential request/echo limits and pathological retry/scheduling behavior;
-- targeted implementation correction only after the responsible layer is identified;
-- full requalification after any justified fix.
+The active investigation must determine whether the observed throughput anomalies are dominated by:
 
-This is genuine software/diagnostic/performance work, not merely missing physical SpaceWire PHY validation.
+- ACK timeout/retransmission behavior;
+- AF_PACKET/host scheduling;
+- STM32 polling/MAC-DMA behavior;
+- fragmentation/control overhead;
+- or an intrinsic sequential reliable-echo ceiling.
 
-### Toward v1.0
+No timeout/default change should be treated as a fix until that root cause is measured.
 
-Remaining pre-1 work also includes release governance and final API/ABI freeze activities. The private FPGA implementation may mature in parallel without blocking the generic software contract.
+### Branch/release note
+
+The development line is substantially ahead of v0.7.0 main and remains the active pre-v0.8 engineering line. Release-branch reconciliation/governance is still part of the pre-1 cleanup.
 
 ---
 
 ## EXN
 
-EXN is the **inter-device system architecture and mission-interface authority**, not the repository for every internal design decision.
+EXN is the **single authority for system architecture and mission-visible component-to-component ICDs**.
 
-### Current architecture baseline
+### Interface ownership
 
-The current central contract establishes:
+The current rule is:
 
-- PUS Revision C as the mission packet/service profile;
-- CCSDSPack v2.x as the packet-library baseline;
-- STM32H755 OBC as spacecraft supervisory authority;
-- Raspberry Pi 5 as a Linux payload platform hosting logically separate Antenna, Camera and Platform Management roles;
-- KV260 as an optional FPGA/AI processing node;
-- Ground/HIL as the external command/telemetry/operator environment;
-- direct payload-data paths where routing through the OBC would be wasteful;
-- optional FPGA deployment rather than making USB/FPGA presence mandatory for a valid OBC configuration.
+- EXN owns interfaces between logical components, regardless of physical deployment.
+- PI-CAM ↔ PI-COMMS is therefore an EXN-owned component interface even when both run on one Raspberry Pi.
+- Internal CM7↔CM4 IPC, KV260 PS↔PL implementation, Linux process layouts, driver internals and Ground daemon/UI internals stay in their component repositories.
 
-### P0 system path
+EXN owns APIDs, PUS services/subservices, payload layouts, routing semantics, HK contracts, events and recovery protocols.
 
-The highest-priority integration path is:
+### Current architecture
+
+Mission interfaces use CCSDS/PUS Revision C.
+
+Logical components include:
+
+- OBC / STM32H755 — spacecraft authority;
+- PI-CAM — camera/product component;
+- PI-COMMS — Ground-link component;
+- PI-MGMT — Pi supervision/recovery component;
+- FPGA — image/AI processing component;
+- Ground/HIL.
+
+The current bench topology is:
+
+```text
+Ground ↔ Pi          : Wi-Fi
+Pi ↔ STM32 OBC       : 3.3 V UART + COBS/CCSDS/PUS-C
+STM32 ↔ KV260        : USB CDC-ACM control, optional by deployment
+Pi ↔ KV260           : direct Gigabit Ethernet for payload objects
+```
+
+### P0 integration path
+
+The first complete system path remains:
 
 ```text
 Ground / EXN-GS
-      |
-     Wi-Fi
-      |
-Pi Antenna service
-      |
- UART / COBS / CCSDS / PUS-C
-      |
+      ↓
+PI-COMMS / Antenna
+      ↓
+UART / COBS / CCSDS / PUS-C
+      ↓
 STM32H755 OBC / CM7 / HardRT
 ```
 
-The system must be commandable and observable through this path without requiring the FPGA.
+The system must be commandable and observable without requiring the FPGA.
 
-### OBC CM7/CM4 model
+### Current implementation gap
 
-- CM7 remains the sole spacecraft-control authority.
-- CM4 may be used for bounded asynchronous/background processing.
-- CM4 execution is a component-internal implementation detail, not a second mission-visible OBC authority.
-- CM7↔CM4 details belong in `exn-mcu-rtos`, not in the central EXN ICD.
+The architecture and central ICD are ahead of the component implementations. Remaining system work is concentrated in:
 
-### Interface ownership rule
-
-Central EXN documentation now deliberately keeps only **inter-device mission-visible contracts**.
-
-Examples that belong in component repositories:
-
-- CM7↔CM4 internal contract;
-- KV260 PS↔PL architecture;
-- Linux service supervision internals;
-- hardware driver selection;
-- sensor acquisition implementation;
-- local scheduling details.
-
-This keeps the ICD usable instead of turning it into a landfill for every internal register and thread.
+- real OBC bootstrap/runtime;
+- real Pi communications/router path;
+- C11 CCSDSPack/PUS-C endpoint implementation;
+- time/HK/supervision;
+- optional USB/KV260 control;
+- payload object paths;
+- complete node-to-node HIL.
 
 ---
 
 ## EXN-GS
 
-EXN-GS is the current Ground/HIL implementation of the central mission protocol.
+EXN-GS implements the Ground/HIL side of the central EXN protocol.
 
-### Current state
+Current capabilities include:
 
-The latest baseline includes:
-
-- PUS-C TC/TM construction and parsing;
-- fixed PUS-C source/destination identities;
-- PUS acknowledgement flags;
-- Service 1 request verification;
+- PUS-C TC/TM construction/parsing;
+- CRC-protected CCSDS framing;
+- Service 1 verification;
 - CUC telemetry timestamps;
-- central service/interface constants synchronized from EXN;
-- recovery-aware System HK snapshot handling;
-- Camera configuration interface alignment;
-- daemon/UI/CLI architecture;
-- Serial/TCP transport;
-- STM32 simulator and HIL coverage.
+- System HK snapshot requests/replies;
+- central endpoint/service constants synchronized from EXN;
+- transport daemon separated from operator/application logic;
+- FTXUI operator client and CLI;
+- Serial/TCP transports;
+- STM32 simulator and HIL smoke coverage.
 
-The repository explicitly treats EXN as the mission-protocol authority.
+The repository must continue to consume mission semantics from EXN rather than defining independent protocol variants.
 
-### Dependency note
-
-The simulator still pins **HardRT 0.4.0**. Upstream HardRT is newer, but the EXN-GS dependency should only move when that simulator/runtime upgrade is explicitly validated.
+The simulator still pins HardRT 0.4.0; upgrading that dependency should remain an explicit regression-tested change rather than following upstream automatically.
 
 ---
 
@@ -294,151 +275,179 @@ The simulator still pins **HardRT 0.4.0**. Upstream HardRT is newer, but the EXN
 
 ### exn-pi-cam
 
-The repository has evolved from a camera-only legacy baseline into the implementation home for the shared Raspberry Pi payload platform.
+Current state:
 
-Defined roles:
+- Camera, Antenna/PI-COMMS and Platform Management are defined as separate logical components on one Pi;
+- their mission-visible component interfaces are owned centrally by EXN;
+- local process/transport implementation details remain in this repository;
+- platform sensor acquisition/normalization responsibility is defined;
+- P0 remains the Ground ↔ PI-COMMS ↔ OBC path.
 
-- **Antenna:** Ground-link ingress/egress and OBC gateway;
-- **Camera:** image acquisition/product handling;
-- **Platform Management:** supervision, health, logging and recovery support.
+Implementation still pending includes:
 
-Immediate implementation priority is the P0 Wi-Fi Ground ↔ Pi Antenna ↔ OBC UART path. Direct KV260 Ethernet object transfer and Service 220 routing follow later.
+- Wi-Fi Ground-facing PI-COMMS service;
+- independently supervised exn-linkd UART/COBS/PUS-C router;
+- Pi health/restart behavior;
+- later direct KV260 Ethernet object transfer.
 
 ### exn-mcu-rtos
 
-The OBC design is now defined around:
+The OBC architecture is defined around:
 
 - CM7 + HardRT;
 - DAS hardware abstraction;
-- C11 CCSDSPack/PUS-C handling;
-- bounded UART/COBS/CCSDS framing toward the Pi;
+- released C11 CCSDSPack/PUS-C;
+- UART/COBS/CCSDS framing toward the Pi;
 - 64-bit time authority;
 - endpoint supervision/System HK;
-- calibrated board health;
+- board health/watchdog/reset cause;
 - optional CM4 asynchronous worker;
-- optional USB/KV260 control endpoint.
+- feature-gated USB CDC-ACM link toward KV260.
 
-The repository remains implementation-heavy work, not a finished OBC.
+The repository remains implementation-heavy. Immediate blockers are the CM7 bootstrap, PUS-C gateway, Pi UART path and the P0 real Ground↔Pi↔OBC loop.
 
 ### exn-fpga-ai
 
-The FPGA repository now owns:
+The repository owns FPGA implementation internals such as:
 
-- KV260 PS/PL internal contracts;
-- generic processing-service architecture;
-- component-local job-engine/sensor-acquisition design.
+- KV260 PS/PL design;
+- local job-engine behavior;
+- sensor acquisition internals.
 
-Immediate implementation work:
+Mission-visible FPGA interfaces remain defined by EXN.
+
+Immediate implementation work includes:
 
 - PS/Linux USB CDC-ACM OBC control endpoint;
-- direct Ethernet Service 220 object path;
+- direct Ethernet Service 220 payload-object path;
 - reference hardware HK;
-- later PL acceleration/inference execution behind the component-owned contract.
+- later PL acceleration/inference implementation.
 
 ---
 
 ## WorldSat Monitor
 
-**Current release:** **v1.1.0**.
+**Current application baseline:** **v1.1.0**.
 
-v1.1 adds:
+### v1.1 baseline
+
+v1.1 includes:
 
 - bounded CelesTrak retry/backoff;
-- catalog caching and stale-cache fallback;
-- local catalog search during provider outage;
+- catalog caching and stale fallback;
 - orbital-source provenance;
-- source/element age and freshness visibility;
+- source/element age and freshness;
 - provider health/attention state;
-- ordered per-satellite provider-priority policy;
-- deterministic fallback to stored orbital elements;
-- provider-capabilities API.
+- deterministic provider-priority/fallback policy;
+- provider-capabilities API;
+- persistent satellite/group/provider/propagation state;
+- Docker Compose deployment.
 
-Current follow-up priorities:
+### Active post-v1.1 development
 
-- browser end-to-end automation;
-- actual WebGL/render validation rather than DOM-only confidence;
-- Space-Track/multi-provider work under its dedicated issue;
-- continued scaling/visualization work only after validation coverage is credible.
+The development branch is ahead of release main and now includes additional UI qualification work such as:
+
+- mobile control usability;
+- visible/recoverable API error paths;
+- diagnostics for failure states.
+
+Open work still includes:
+
+- real browser Playwright E2E against production-built Compose;
+- actual WebGL/MapLibre rendered-scene validation;
+- screenshot/pixel-difference evidence for visual behavior;
+- release pull-only browser smoke against published images;
+- later Space-Track/multi-provider work.
+
+A separate open PR provides a serverless ChatGPT Sites backend/deployment path while preserving the normal Docker Compose architecture.
 
 ---
 
 ## SpWKit FPGA
 
-The private `spwkit-fpga` repository is the implementation-specific hardware companion to public SpWKit.
+The private SpWKit FPGA repository is the implementation-specific hardware companion to public SpWKit.
 
-### Ownership boundary
+### Current bring-up state
 
-```text
-spwkit [public]
-├── application API
-├── simulator / transport abstractions
-├── DRIVER contract
-├── lifecycle/error/timeout/resource semantics
-├── zero-copy / DMA ownership model
-└── software conformance + qualification
-         |
-         v
-spwkit-fpga [private]
-├── project-owned SpaceWire RTL
-├── controller/link state machine
-├── packet datapath / buffering
-├── control/status registers
-├── KV260 platform integration
-├── low-level driver
-├── Rev-A LVDS adapter
-└── physical SpaceWire HIL
-```
+The repository has progressed beyond architecture-only setup:
 
-### Current state
+- KV260/Vivado bring-up documentation is active;
+- a minimal blink design has been cleaned up and standardized on VHDL;
+- superseded SystemVerilog blink RTL has been removed;
+- JTAG probing now includes a guard against freezing a live Linux system;
+- Rev-A LVDS adapter design remains available and DRC-clean.
 
-- architecture/IP-ownership policy defined;
-- production path excludes commercial/encrypted protocol IP as an essential dependency;
-- Rev-A LVDS adapter is designed and DRC-clean;
-- KV260 bring-up/development-environment work is active;
-- owned SpaceWire RTL/controller implementation remains pending;
-- physical SpaceWire HIL follows after fabric/controller bring-up.
+The first FPGA validation issue remains open because the complete reproducible bring-up and visible/measurable GPIO proof is not yet closed.
 
-This work is intentionally separate from the generic SpWKit software release contract.
+### Remaining implementation
+
+Still pending:
+
+- validated GPIO/ILA workflow;
+- LVDS TX/RX electrical I/O;
+- serializer/deserializer building blocks;
+- project-owned SpaceWire link-state/controller RTL;
+- packet datapath/buffering;
+- PS↔PL integration;
+- low-level SpWKit provider/driver integration;
+- physical SpaceWire HIL.
+
+This repository remains intentionally separate from generic SpWKit software-release readiness.
+
+---
+
+## Current Active Pull Requests
+
+At this snapshot the main active engineering PRs are:
+
+- **CCSDSPack:** v2.2 C11 validation-ownership refactors;
+- **SpWKit:** end-to-end transport performance campaign;
+- **WorldSat Monitor:** serverless ChatGPT Sites deployment path preserving Compose.
+
+HardRT has no equivalent active release PR because 0.6.0 is already published and main/develop are aligned.
 
 ---
 
 ## Current Execution Order
 
-1. **CCSDSPack:** close v2.1 release governance and publish the already-qualified implementation.
-2. **HardRT:** finish the 0.6 release audit and qualification-safe tagging/promotion flow.
-3. **SpWKit:** add observability, reproduce the ACK/retry anomaly, identify the responsible layer, then perform the smallest justified correction and requalification.
-4. **EXN Pi:** implement the P0 Antenna gateway and independent platform supervision.
-5. **EXN MCU:** build the CM7 HardRT+DAS+C11 CCSDSPack bootstrap and close the real Ground↔Pi↔OBC PUS-C loop.
-6. **EXN-GS:** validate the current PUS-C implementation against the real P0 integration path.
-7. **SpWKit FPGA:** continue KV260/RTL/controller bring-up without coupling it to generic SpWKit software release readiness.
-8. **EXN FPGA AI:** implement optional control/object-transfer endpoints after the P0 spacecraft-control path is operational.
-9. **WorldSat Monitor:** close actual browser/WebGL E2E validation before materially broadening UI complexity.
+1. **SpWKit:** complete diagnostics/root-cause work for the ACK/retry performance anomaly, then requalify the affected transport path.
+2. **EXN MCU:** implement CM7 HardRT+DAS + CCSDSPack v2.1 baseline and bring up the Pi UART/PUS-C path.
+3. **EXN Pi:** implement PI-COMMS/exn-linkd and independently supervised P0 Ground↔Pi↔OBC routing.
+4. **EXN-GS:** validate the existing PUS-C Ground/HIL stack against the real Pi/OBC path.
+5. **CCSDSPack:** continue v2.2 single-authority validation cleanup without destabilizing released v2.1.
+6. **HardRT:** begin 0.7 timing/interference qualification and analytical-bound work on top of the released 0.6 contract.
+7. **SpWKit FPGA:** close reproducible KV260/GPIO bring-up, then advance into LVDS and owned SpaceWire RTL.
+8. **WorldSat Monitor:** finish browser/WebGL E2E qualification while integrating the alternative Sites deployment cleanly.
+9. **EXN FPGA AI:** implement the optional control/object endpoints after the P0 spacecraft-control path is operational.
 
 ## Dependency Position
 
 ```text
 CCSDSPack
-├── v2.0.0 released
-└── v2.1 qualified candidate
-    ├── HardRT/EXN future C11 consumers
-    └── downstream packet/interface baseline
+├── v2.1.0 released
+└── v2.2 boundary/validation refactor active
 
 HardRT
-├── 0.5.1 released
-└── 0.6 implementation + H755 qualification complete
-    └── release closure active
+├── 0.6.0 released
+├── main == develop
+└── 0.7 timing/interference qualification next
 
 SpWKit
 ├── v0.7.0 released
-├── functional hardware-provider evidence
-└── end-to-end transport performance qualification active
+├── physical functionality qualified
+└── performance/root-cause qualification active
 
 EXN
-├── central PUS-C ICD
-├── EXN-GS implementation
-├── Pi P0 Antenna path
-├── MCU/OBC implementation
-└── optional FPGA integration
+├── central PUS-C architecture + complete component ICD ownership
+├── EXN-GS implementation baseline
+├── Pi P0 communications implementation pending
+├── MCU/OBC implementation pending
+└── optional FPGA integration pending
+
+WorldSat Monitor
+├── v1.1.0 baseline
+├── post-release UI validation on develop
+└── browser/WebGL + Sites work active
 ```
 
-The portfolio is now in the comparatively healthy stage where most of the difficult questions are about **qualification boundaries, measured behavior and integration order**, rather than whether the basic architecture exists at all.
+The portfolio is now split cleanly between **released foundations**, **measurement/qualification work**, and **EXN component implementation**. Those categories should remain explicit so an open roadmap issue is not mistaken for an unreleased or missing core feature.
