@@ -4,69 +4,70 @@
 
 **Expanding with Space**
 
-ExoSpaceLabs develops open-source engineering infrastructure for spacecraft communications, embedded avionics, real-time execution, simulation, and mission observability. The portfolio emphasizes standards-based interfaces, explicit software/hardware ownership boundaries, reproducible builds, representative hardware validation, and reusable contracts that survive the move from desktop simulation to embedded targets.
+ExoSpaceLabs develops open-source engineering infrastructure for spacecraft communications, embedded avionics, real-time execution, simulation, FPGA integration, and mission observability. The portfolio emphasizes standards-based interfaces, explicit ownership boundaries, reproducible builds, representative hardware validation, and reusable contracts that can move from desktop simulation to embedded targets.
 
 ## Project Portfolio
 
 | Project | Lifecycle | Current position |
 | --- | --- | --- |
-| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/CCSDSPack/main/docs/imgs/Logo.png" alt="CCSDSPack logo" height="64"> | **Stable v2.0.0 / v2.1 release candidate** | CCSDS Space Packet and ECSS PUS library. The v2.1 line adds an authoritative C11 protocol core beneath the compatible C++17 API. Feature migration is complete and the candidate has passed Raspberry Pi 5/native arm64 and NUCLEO-H755ZI-Q physical acceptance; final promotion/tagging remains under release control. |
-| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/spwkit/main/img/SpWKit_logo.png" alt="SpWKit logo" height="48"> | **Stable v0.7.0 / pre-v1 hardening** | Portable C11 SpaceWire development and integration toolkit with simulation, distributed transports, Linux virtual devices, and a stable public hardware-driver boundary. Physical RAW-Ethernet functionality passes across PC, Raspberry Pi 5, and STM32H755; current work is qualifying end-to-end performance and investigating ACK/retry-driven anomalies before the v0.8 readiness freeze. |
-| **[HardRT](https://github.com/ExoSpaceLabs/hardrt)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/hardrt/main/docs/images/HardRT_logo.png" alt="HardRT logo" height="84"> | **Stable v0.5.1 / v0.6 release preparation** | Small static-allocation RTOS for deterministic embedded execution. The v0.6 development line implements bounded IPC timeouts, bounded mutex priority inheritance, and stable-phase periodic timing; the full STM32H755 functional/benchmark campaign has passed on the qualified baseline. Remaining v0.6 work is release audit, qualification-equivalence control, and final release closure rather than missing core features. |
-| **[EXN](https://github.com/ExoSpaceLabs/exn)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/exn/main/docs/images/exn_logo_transparent.png" alt="EXN logo" height="76"> | **Active architecture / integration** | Modular satellite-avionics demonstrator and inter-device interface authority. The architecture is now PUS-C based, prioritizes the OBC ↔ Pi communications path, keeps FPGA USB deployment optional, reserves CM4 for asynchronous internal work, and deliberately keeps component-internal contracts inside their owning repositories. |
-| **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/exn/main/docs/images/exn_logo_transparent.png" alt="EXN logo" height="76"> | **Active / PUS-C migrated** | C++17 ground-control and HIL environment with transport daemon, FTXUI operator client, CLI tooling, Serial/TCP links, STM32 simulation, PUS-C Service 1 verification, System HK support, and central-ICD-driven mission semantics. |
-| **[WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/world-sat-monitor/main/frontend/public/favicon.svg" alt="WorldSat Monitor logo" height="68"> | **Stable v1.1.0** | Self-hosted satellite and constellation situational-awareness platform with backend SGP4 propagation, persistent object/group management, interactive 3D Earth visualization, provider-health reporting, orbital-source provenance, bounded CelesTrak retry/backoff, and deterministic degraded fallback behavior. |
+| **[CCSDSPack](https://github.com/ExoSpaceLabs/CCSDSPack)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/CCSDSPack/main/docs/imgs/Logo.png" alt="CCSDSPack logo" height="64"> | **Stable / v2.1.0** | Layered CCSDS Space Packet library with an authoritative C11 protocol core and compatible C++17 API. v2.1.0 was published on 2026-10-25 after Raspberry Pi 5/native arm64 and NUCLEO-H755ZI-Q qualification. Development has moved to v2.2, where C11 is being made the single authority for protocol validation across remaining C++ boundaries. |
+| **[HardRT](https://github.com/ExoSpaceLabs/hardrt)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/hardrt/main/docs/images/HardRT_logo.png" alt="HardRT logo" height="84"> | **Stable / 0.6.0** | Static-allocation real-time kernel with bounded IPC timeouts, bounded transitive priority inheritance, and phase-preserving periodic timing. 0.6.0 was published on 2026-10-25 after full STM32H755 qualification. main and develop are currently aligned; the next major engineering phase is deeper timing/interference qualification toward the 1.0 hard-real-time contract. |
+| **[SpWKit](https://github.com/ExoSpaceLabs/spwkit)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/spwkit/main/img/SpWKit_logo.png" alt="SpWKit logo" height="48"> | **Stable / v0.7.0 · active pre-v1 development** | Portable C11 SpaceWire development and integration toolkit with simulation, distributed transports, Linux virtual devices, and a public hardware-driver contract. Physical RAW-Ethernet functionality passes across PC, Raspberry Pi 5, and STM32H755. Current development is instrumenting and qualifying end-to-end transport performance, including ACK/retry and TX-slot diagnostics, before the v0.8 readiness freeze. |
+| **[EXN](https://github.com/ExoSpaceLabs/exn)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/exn/main/docs/images/exn_logo_transparent.png" alt="EXN logo" height="76"> | **Active architecture / integration** | Modular satellite-avionics demonstrator and the single authority for EXN system architecture and component-to-component ICDs. Mission interfaces use CCSDS/PUS-C; the P0 path is Ground → Pi communications → STM32 OBC, while FPGA support remains modular. EXN owns interfaces between logical components even when they share one physical host; component-internal implementation contracts remain local to their repositories. |
+| **[EXN-GS](https://github.com/ExoSpaceLabs/exn-gs)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/exn/main/docs/images/exn_logo_transparent.png" alt="EXN logo" height="76"> | **Active / PUS-C HIL baseline** | C++17 Ground/HIL environment with transport daemon, operator UI, CLI, STM32 simulator, Serial/TCP links, PUS-C packet handling, Service 1 verification, System HK support, and central-ICD-driven mission semantics. |
+| **[WorldSat Monitor](https://github.com/ExoSpaceLabs/world-sat-monitor)**<br><img src="https://raw.githubusercontent.com/ExoSpaceLabs/world-sat-monitor/main/frontend/public/favicon.svg" alt="WorldSat Monitor logo" height="68"> | **Stable / v1.1.0 · active post-release development** | Self-hosted satellite and constellation situational-awareness platform with backend SGP4 propagation, provider resilience, source provenance, persistent state, and interactive 3D Earth visualization. Post-v1.1 work includes mobile/error-path UI qualification, browser/WebGL end-to-end validation, and a serverless ChatGPT Sites deployment path that does not replace the normal Docker Compose flow. |
 
 ## Current Engineering Position
 
-The reusable foundations are no longer the main portfolio blocker. The current work is mostly release qualification, performance characterization, and system integration rather than inventing yet another abstraction layer because apparently software engineers have suffered enough.
+The reusable foundations have moved from release preparation into active follow-on development:
 
 ```text
 CCSDSPack
-├── v2.0.0 stable release
-└── v2.1 C11-core candidate
-    ├── protocol/API implementation complete
-    ├── Pi 5 + STM32H755 physical acceptance passed
-    └── release promotion/tagging pending
+├── v2.1.0 released and hardware-qualified
+└── v2.2 active
+    └── C11 becomes sole protocol-validation authority at C++ boundaries
 
 HardRT
-├── v0.5.1 stable release
-└── v0.6 development line
-    ├── bounded IPC timeouts implemented
-    ├── bounded priority inheritance implemented
-    ├── stable-phase periodic timing implemented
-    ├── full H755 campaign passed on qualified baseline
-    └── release audit / final qualification control pending
+├── 0.6.0 released and STM32H755-qualified
+├── main == develop
+└── next: 0.7 timing / interference / analytical qualification
 
 SpWKit
-├── v0.7.0 stable release
-├── software/backend contract established
-├── PC ↔ Pi ↔ STM32 physical functionality passed
-└── end-to-end performance + ACK/retry investigation active
+├── v0.7.0 released
+├── physical PC ↔ Pi ↔ STM32 functionality PASS
+└── transport performance qualification active
+    ├── ACK/retry investigation
+    └── CPU / TX-slot / carrier-frame diagnostics
 
 EXN
-├── PUS-C inter-device architecture established
-├── OBC ↔ Pi communications path = priority 0
-├── FPGA link remains modular / deployment-optional
-└── component implementation + end-to-end HIL = main system work
+├── central PUS-C component-to-component ICD defined
+├── P0 Ground ↔ Pi communications ↔ STM32 OBC
+├── FPGA deployment optional
+└── component implementation + end-to-end HIL remain the main system work
+
+WorldSat Monitor
+├── v1.1.0 baseline
+├── post-v1.1 UI resilience/mobile validation on develop
+├── browser/WebGL E2E qualification open
+└── serverless Sites deployment PR active
 ```
 
 ## Engineering Focus
 
-- **Space communications:** CCSDS Space Packets, ECSS PUS-C, SpaceWire transport, protocol validation, and explicit interoperability contracts.
+- **Space communications:** CCSDS Space Packets, ECSS PUS-C, SpaceWire transport, protocol validation, routing, and interoperability contracts.
 - **Embedded and real-time systems:** STM32/Cortex-M software, deterministic scheduling, bounded synchronization, DMA/cache ownership, and hardware qualification.
-- **FPGA and hardware integration:** reusable software-facing provider contracts separated from implementation-specific controller/RTL/PHY work.
+- **FPGA and hardware integration:** project-owned RTL and implementation-specific hardware kept behind reusable software-facing provider contracts.
 - **Simulation and HIL:** host simulation, virtual/distributed links, device emulation, fault injection, and staged physical integration.
 - **Standards and assurance:** scoped ECSS conformance, requirements-to-test traceability, compatibility discipline, and reproducible qualification evidence.
 - **Performance characterization:** measurement before optimization, with software, provider/controller, and physical-link effects kept distinct.
-- **Mission observability:** satellite tracking, propagation, orbital-source health, state persistence, and operational visualization.
-- **Release engineering:** versioned packages, multi-platform CI, external-consumer tests, hardware evidence, and controlled release promotion.
+- **Mission observability:** satellite tracking, propagation, provider/source health, state persistence, and operational visualization.
+- **Release engineering:** version-driven publication, multi-platform CI, external-consumer validation, hardware evidence, and deterministic regeneration of qualification diagnostics.
 
-Detailed lifecycle and release state is maintained in **[Project Status](../docs/PROJECTSTATUS.md)**.
+Detailed lifecycle and development state is maintained in **[Project Status](../docs/PROJECTSTATUS.md)**.
 
 ## Engineering Principles
 
-Projects are expected to have a defined scope, documented interfaces, automated validation, explicit versioning/compatibility policy, and a credible route to representative hardware. Public APIs should expose implementation-independent contracts; hardware internals and component-local contracts should remain where they belong. Claims follow evidence.
+Projects are expected to have a defined scope, documented interfaces, automated validation, explicit versioning/compatibility policy, and a credible route to representative hardware. EXN owns mission-visible component interfaces; implementation-internal contracts remain with the component that owns them. Public APIs should expose implementation-independent contracts, and claims should follow evidence.
 
 ## Contributing
 
